@@ -19,8 +19,12 @@ object Messages {
     const val USER_UPDATED = "User updated"
     const val USER_DELETED = "User deleted"
     const val USER_NOT_FOUND = "User not found"
+    // Removed generic for duplicates in favor of specific ones (kept for fallback)
     const val USER_ALREADY_EXISTS = "User already exists"
     const val USER_LIST = "User list"
+    const val USERNAME_ALREADY_EXISTS = "Username already exists"
+    const val EMAIL_ALREADY_EXISTS = "Email already exists"
+    const val MOBILE_ALREADY_EXISTS = "Mobile number already exists"
 
     // Validation / Errors
     const val VALIDATION_FAILED = "Validation failed"

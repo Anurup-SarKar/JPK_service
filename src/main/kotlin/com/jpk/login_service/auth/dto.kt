@@ -1,5 +1,6 @@
 package com.jpk.login_service.auth
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
@@ -12,7 +13,8 @@ data class LoginRequest(
                 regexp = "^[a-fA-F0-9]{64}$",
                 message = "Password must be SHA-256 hash (64 hex characters)"
         )
-        val passwordHash: String // SHA-256 hash from frontend
+        @JsonAlias("password")
+        val passwordHash: String // accepts password or passwordHash
 )
 
 // Response after login (OTP only)
@@ -26,7 +28,8 @@ data class OtpValidateRequest(
                 regexp = "^[a-fA-F0-9]{64}$",
                 message = "Password must be SHA-256 hash (64 hex characters)"
         )
-        val passwordHash: String, // SHA-256 hash from frontend
+        @JsonAlias("password")
+        val passwordHash: String, // accepts password or passwordHash
         @field:NotBlank @field:Pattern(regexp = "\\d{6}") val otp: String
 )
 

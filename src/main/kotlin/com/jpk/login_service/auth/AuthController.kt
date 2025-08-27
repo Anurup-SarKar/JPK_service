@@ -11,35 +11,37 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/auth")
 class AuthController(private val authService: AuthService) {
 
-    @PostMapping("/login")
-    fun login(@Valid @RequestBody req: LoginRequest): ResponseEntity<ApiResponse<OtpResponse>> =
-            ResponseEntity.ok(
-                    ApiResponse(
-                            statusCode = 200,
-                            statusMessage = Messages.OTP_SENT,
-                            data = authService.loginAndGenerateOtp(req)
-                    )
-            )
+        @PostMapping("/login")
+        fun login(@Valid @RequestBody req: LoginRequest): ResponseEntity<ApiResponse<OtpResponse>> =
+                ResponseEntity.ok(
+                        ApiResponse(
+                                statusCode = 200,
+                                statusMessage = Messages.OTP_SENT,
+                                data = authService.loginAndGenerateOtp(req)
+                        )
+                )
 
-    @PostMapping("/validate-otp")
-    fun validateOtp(
-            @Valid @RequestBody req: OtpValidateRequest
-    ): ResponseEntity<ApiResponse<UserDataResponse>> =
-            ResponseEntity.ok(
-                    ApiResponse(
-                            statusCode = 200,
-                            statusMessage = Messages.OTP_VALIDATED,
-                            data = authService.validateOtp(req)
-                    )
-            )
+        @PostMapping("/validate-otp")
+        fun validateOtp(
+                @Valid @RequestBody req: OtpValidateRequest
+        ): ResponseEntity<ApiResponse<UserDataResponse>> =
+                ResponseEntity.ok(
+                        ApiResponse(
+                                statusCode = 200,
+                                statusMessage = Messages.OTP_VALIDATED,
+                                data = authService.validateOtp(req)
+                        )
+                )
 
-    @PostMapping("/resend-otp")
-    fun resendOtp(@Valid @RequestBody req: LoginRequest): ResponseEntity<ApiResponse<OtpResponse>> =
-            ResponseEntity.ok(
-                    ApiResponse(
-                            statusCode = 200,
-                            statusMessage = Messages.OTP_RESENT,
-                            data = authService.resendOtp(req)
-                    )
-            )
+        @PostMapping("/resend-otp")
+        fun resendOtp(
+                @Valid @RequestBody req: LoginRequest
+        ): ResponseEntity<ApiResponse<OtpResponse>> =
+                ResponseEntity.ok(
+                        ApiResponse(
+                                statusCode = 200,
+                                statusMessage = Messages.OTP_RESENT,
+                                data = authService.resendOtp(req)
+                        )
+                )
 }

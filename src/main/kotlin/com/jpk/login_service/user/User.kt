@@ -10,7 +10,7 @@ class User(
         @Column(nullable = false, unique = true, length = 50) var username: String,
         @Column(nullable = false, unique = true, length = 100) var email: String,
         @Column(unique = true, length = 15) var mobile: String? = null,
-        @Column(name = "password_hash", nullable = false, length = 255) var passwordHash: String,
+        @Column(name = "password_hash", nullable = false, length = 512) var passwordHash: String,
         @Column(name = "full_name", length = 100) var fullName: String? = null,
         @Column(name = "cctv_link", length = 255) var cctvLink: String? = null,
         @Column(name = "is_cctv_visible") var isCctvVisible: Boolean = false,

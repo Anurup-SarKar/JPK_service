@@ -13,17 +13,25 @@ class UserService(private val userRepository: UserRepository) {
     @Transactional
     fun createUser(req: CreateUserRequest): UserResponse {
         if (userRepository.findByEmail(req.email).isPresent) {
-            throw IllegalArgumentException(Messages.USER_ALREADY_EXISTS)
+            throw IllegalArgumentException(Messages.EMAIL_ALREADY_EXISTS)
         }
         if (userRepository.findByUsername(req.username).isPresent) {
-            throw IllegalArgumentException(Messages.USER_ALREADY_EXISTS)
+            throw IllegalArgumentException(Messages.USERNAME_ALREADY_EXISTS)
+        }
+        // Mobile uniqueness check if provided
+        if (req.mobile != null) {
+            val existing = userRepository.findAll().any { it.mobile == req.mobile }
+            if (existing) throw IllegalArgumentException(Messages.MOBILE_ALREADY_EXISTS)
         }
         val user =
                 User(
                         username = req.username,
                         email = req.email,
                         mobile = req.mobile,
-                        passwordHash = PasswordUtils.hashPassword(req.passwordHash), // BCrypt hash of SHA-256 hash from frontend
+                        passwordHash =
+                                PasswordUtils.hashPassword(
+                                        req.passwordHash
+                                ), // BCrypt hash of SHA-256 hash from frontend
                         fullName = req.fullName,
                         cctvLink = req.cctvLink,
                         isCctvVisible = req.isCctvVisible,
@@ -40,9 +48,27 @@ class UserService(private val userRepository: UserRepository) {
                 userRepository.findById(id).orElseThrow {
                     IllegalArgumentException(Messages.USER_NOT_FOUND)
                 }
-        req.username?.let { user.username = it }
-        req.email?.let { user.email = it }
-        req.mobile?.let { user.mobile = it }
+        req.username?.let { newUsername ->
+            if (newUsername != user.username && userRepository.findByUsername(newUsername).isPresent
+            ) {
+                throw IllegalArgumentException(Messages.USERNAME_ALREADY_EXISTS)
+            }
+            user.username = newUsername
+        }
+        req.email?.let { newEmail ->
+            if (newEmail != user.email && userRepository.findByEmail(newEmail).isPresent) {
+                throw IllegalArgumentException(Messages.EMAIL_ALREADY_EXISTS)
+            }
+            user.email = newEmail
+        }
+        req.mobile?.let { newMobile ->
+            if (newMobile != user.mobile && newMobile.isNotBlank()) {
+                val exists =
+                        userRepository.findAll().any { it.mobile == newMobile && it.id != user.id }
+                if (exists) throw IllegalArgumentException(Messages.MOBILE_ALREADY_EXISTS)
+            }
+            user.mobile = newMobile
+        }
         req.passwordHash?.let { user.passwordHash = PasswordUtils.hashPassword(it) }
         req.fullName?.let { user.fullName = it }
         req.cctvLink?.let { user.cctvLink = it }
@@ -74,8 +100,21 @@ class UserService(private val userRepository: UserRepository) {
                 userRepository.findByEmail(req.email).orElseThrow {
                     IllegalArgumentException(Messages.USER_NOT_FOUND)
                 }
-        req.username?.let { user.username = it }
-        req.mobile?.let { user.mobile = it }
+        req.username?.let { newUsername ->
+            if (newUsername != user.username && userRepository.findByUsername(newUsername).isPresent
+            ) {
+                throw IllegalArgumentException(Messages.USERNAME_ALREADY_EXISTS)
+            }
+            user.username = newUsername
+        }
+        req.mobile?.let { newMobile ->
+            if (newMobile != user.mobile && newMobile.isNotBlank()) {
+                val exists =
+                        userRepository.findAll().any { it.mobile == newMobile && it.id != user.id }
+                if (exists) throw IllegalArgumentException(Messages.MOBILE_ALREADY_EXISTS)
+            }
+            user.mobile = newMobile
+        }
         req.passwordHash?.let { user.passwordHash = PasswordUtils.hashPassword(it) }
         req.fullName?.let { user.fullName = it }
         req.cctvLink?.let { user.cctvLink = it }
