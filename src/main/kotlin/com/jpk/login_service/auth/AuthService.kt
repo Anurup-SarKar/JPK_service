@@ -1,6 +1,7 @@
 package com.jpk.login_service.auth
 
 import com.jpk.login_service.user.UserRepository
+import com.jpk.login_service.common.PasswordUtils
 import java.time.Duration
 import java.time.Instant
 import kotlin.random.Random
@@ -24,7 +25,7 @@ class AuthService(
                             com.jpk.login_service.common.Messages.INVALID_CREDENTIALS
                     )
                 }
-        if (req.password != user.passwordHash)
+        if (!PasswordUtils.verifyPassword(req.passwordHash, user.passwordHash))
                 throw IllegalArgumentException(
                         com.jpk.login_service.common.Messages.INVALID_CREDENTIALS
                 )
@@ -49,7 +50,7 @@ class AuthService(
                             com.jpk.login_service.common.Messages.INVALID_CREDENTIALS
                     )
                 }
-        if (req.password != user.passwordHash)
+        if (!PasswordUtils.verifyPassword(req.passwordHash, user.passwordHash))
                 throw IllegalArgumentException(
                         com.jpk.login_service.common.Messages.INVALID_CREDENTIALS
                 )
@@ -88,7 +89,7 @@ class AuthService(
                             com.jpk.login_service.common.Messages.INVALID_CREDENTIALS
                     )
                 }
-        if (req.password != user.passwordHash)
+        if (!PasswordUtils.verifyPassword(req.passwordHash, user.passwordHash))
                 throw IllegalArgumentException(
                         com.jpk.login_service.common.Messages.INVALID_CREDENTIALS
                 )

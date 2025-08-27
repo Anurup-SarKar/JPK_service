@@ -27,6 +27,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+	// Password hashing
+	implementation("org.mindrot:jbcrypt:0.4")
 
 	// JPA API
 	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")

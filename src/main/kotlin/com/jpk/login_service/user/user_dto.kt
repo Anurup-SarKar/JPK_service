@@ -1,12 +1,10 @@
 package com.jpk.login_service.user
 
-import com.jpk.login_service.common.PASSWORD_POLICY_MESSAGE
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 
-// Request DTO for creating a user
-// (username kept for now; could be removed later if only email is used)
+// Request DTO for creating a user - password should be SHA-256 hash from frontend
 
 data class CreateUserRequest(
         @field:NotBlank val username: String,
@@ -14,10 +12,10 @@ data class CreateUserRequest(
         val mobile: String? = null,
         @field:NotBlank
         @field:Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$",
-                message = PASSWORD_POLICY_MESSAGE
+                regexp = "^[a-fA-F0-9]{64}$",
+                message = "Password must be SHA-256 hash (64 hex characters)"
         )
-        val password: String,
+        val passwordHash: String, // SHA-256 hash from frontend
         val fullName: String? = null,
         val cctvLink: String? = null,
         val isCctvVisible: Boolean = false,
@@ -33,10 +31,10 @@ data class UpdateUserRequest(
         @field:Email val email: String? = null,
         val mobile: String? = null,
         @field:Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$",
-                message = PASSWORD_POLICY_MESSAGE
+                regexp = "^[a-fA-F0-9]{64}$",
+                message = "Password must be SHA-256 hash (64 hex characters)"
         )
-        val password: String? = null,
+        val passwordHash: String? = null, // SHA-256 hash from frontend
         val fullName: String? = null,
         val cctvLink: String? = null,
         val isCctvVisible: Boolean? = null,
@@ -71,10 +69,10 @@ data class UpdateUserByEmailRequest(
         val username: String? = null,
         val mobile: String? = null,
         @field:Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$",
-                message = PASSWORD_POLICY_MESSAGE
+                regexp = "^[a-fA-F0-9]{64}$",
+                message = "Password must be SHA-256 hash (64 hex characters)"
         )
-        val password: String? = null,
+        val passwordHash: String? = null, // SHA-256 hash from frontend
         val fullName: String? = null,
         val cctvLink: String? = null,
         val isCctvVisible: Boolean? = null,

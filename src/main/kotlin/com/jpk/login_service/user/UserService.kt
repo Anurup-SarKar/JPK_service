@@ -1,6 +1,7 @@
 package com.jpk.login_service.user
 
 import com.jpk.login_service.common.Messages
+import com.jpk.login_service.common.PasswordUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -22,7 +23,7 @@ class UserService(private val userRepository: UserRepository) {
                         username = req.username,
                         email = req.email,
                         mobile = req.mobile,
-                        passwordHash = req.password, // In real scenario hash the password
+                        passwordHash = PasswordUtils.hashPassword(req.passwordHash), // BCrypt hash of SHA-256 hash from frontend
                         fullName = req.fullName,
                         cctvLink = req.cctvLink,
                         isCctvVisible = req.isCctvVisible,
@@ -42,7 +43,7 @@ class UserService(private val userRepository: UserRepository) {
         req.username?.let { user.username = it }
         req.email?.let { user.email = it }
         req.mobile?.let { user.mobile = it }
-        req.password?.let { user.passwordHash = it }
+        req.passwordHash?.let { user.passwordHash = PasswordUtils.hashPassword(it) }
         req.fullName?.let { user.fullName = it }
         req.cctvLink?.let { user.cctvLink = it }
         req.isCctvVisible?.let { user.isCctvVisible = it }
@@ -75,7 +76,7 @@ class UserService(private val userRepository: UserRepository) {
                 }
         req.username?.let { user.username = it }
         req.mobile?.let { user.mobile = it }
-        req.password?.let { user.passwordHash = it }
+        req.passwordHash?.let { user.passwordHash = PasswordUtils.hashPassword(it) }
         req.fullName?.let { user.fullName = it }
         req.cctvLink?.let { user.cctvLink = it }
         req.isCctvVisible?.let { user.isCctvVisible = it }

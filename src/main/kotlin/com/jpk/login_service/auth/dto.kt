@@ -1,33 +1,32 @@
 package com.jpk.login_service.auth
 
-import com.jpk.login_service.common.PASSWORD_POLICY_MESSAGE
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 
-// Login request (username + password)
+// Login request - password should be SHA-256 hash from frontend
 data class LoginRequest(
         @field:Email @field:NotBlank val email: String,
         @field:NotBlank
         @field:Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$",
-                message = PASSWORD_POLICY_MESSAGE
+                regexp = "^[a-fA-F0-9]{64}$",
+                message = "Password must be SHA-256 hash (64 hex characters)"
         )
-        val password: String
+        val passwordHash: String // SHA-256 hash from frontend
 )
 
 // Response after login (OTP only)
 data class OtpResponse(val otp: String, val expiresInSeconds: Long)
 
-// OTP validation request
+// OTP validation request - password should be SHA-256 hash from frontend
 data class OtpValidateRequest(
         @field:Email @field:NotBlank val email: String,
         @field:NotBlank
         @field:Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$",
-                message = PASSWORD_POLICY_MESSAGE
+                regexp = "^[a-fA-F0-9]{64}$",
+                message = "Password must be SHA-256 hash (64 hex characters)"
         )
-        val password: String,
+        val passwordHash: String, // SHA-256 hash from frontend
         @field:NotBlank @field:Pattern(regexp = "\\d{6}") val otp: String
 )
 
