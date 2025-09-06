@@ -37,4 +37,9 @@ object Messages {
 
     // Config values
     const val OTP_TTL_MINUTES = 5L
+
+    // Password reset
+    const val PASSWORD_RESET_REQUESTED = "Password reset requested"
+    const val PASSWORD_RESET_TOKEN_INVALID = "Invalid or expired reset token"
+    const val PASSWORD_RESET_SUCCESS = "Password reset successful"
 }

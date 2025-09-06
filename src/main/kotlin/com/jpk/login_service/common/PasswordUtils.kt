@@ -1,6 +1,7 @@
 package com.jpk.login_service.common
 
 import java.security.MessageDigest
+import java.security.SecureRandom
 import org.mindrot.jbcrypt.BCrypt
 
 /**
@@ -16,6 +17,7 @@ import org.mindrot.jbcrypt.BCrypt
 object PasswordUtils {
 
     private const val BCRYPT_ROUNDS = 12
+    private val secureRandom = SecureRandom()
 
     /**
      * Hash a SHA-256 password hash (received from frontend) using BCrypt
@@ -102,5 +104,26 @@ object PasswordUtils {
             // For other formats, we need the raw password to migrate properly
             else -> throw IllegalArgumentException("Cannot migrate hash without raw password")
         }
+    }
+
+    /**
+     * Generate a random hex string
+     * @param bytes Number of bytes for the hex string
+     * @return Random hex string
+     */
+    fun randomHex(bytes: Int): String {
+        val b = ByteArray(bytes)
+        secureRandom.nextBytes(b)
+        return b.joinToString("") { "%02x".format(it) }
+    }
+
+    /**
+     * Generate SHA-256 hash of a string
+     * @param input The input string
+     * @return SHA-256 hash in hex format
+     */
+    fun sha256Hex(input: String): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        return digest.digest(input.toByteArray()).joinToString("") { "%02x".format(it) }
     }
 }
