@@ -51,6 +51,8 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	// In-memory DB for tests (needed for application-test.properties referencing org.h2.Driver)
+	testRuntimeOnly("com.h2database:h2")
 }
 
 kotlin {
