@@ -54,7 +54,10 @@ class CreateUserIntegrationTest {
                 )
 
         invalidHashes.forEach { invalidHash ->
-            assertThrows<IllegalArgumentException> { PasswordUtils.hashPassword(invalidHash) }
+            // Use Java style assertThrows to avoid Kotlin extension resolution issues
+            assertThrows(IllegalArgumentException::class.java) {
+                PasswordUtils.hashPassword(invalidHash)
+            }
         }
     }
 }
