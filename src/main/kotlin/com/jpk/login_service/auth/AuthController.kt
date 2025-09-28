@@ -1,6 +1,7 @@
 package com.jpk.login_service.auth
 
 import com.jpk.login_service.common.ApiResponse
+import com.jpk.login_service.common.JwtUtils
 import com.jpk.login_service.common.Messages
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/auth")
 class AuthController(
         private val authService: AuthService,
-        private val passwordResetService: PasswordResetService
+        private val passwordResetService: PasswordResetService,
+        private val jwtUtils: JwtUtils
 ) {
 
         @PostMapping("/login")
@@ -27,12 +29,34 @@ class AuthController(
         @PostMapping("/validate-otp")
         fun validateOtp(
                 @Valid @RequestBody req: OtpValidateRequest
-        ): ResponseEntity<ApiResponse<UserDataResponse>> =
+        ): ResponseEntity<ApiResponse<UserSessionResponse>> =
                 ResponseEntity.ok(
                         ApiResponse(
                                 statusCode = 200,
                                 statusMessage = Messages.OTP_VALIDATED,
-                                data = authService.validateOtp(req)
+                                data =
+                                        authService.validateOtp(req).let { user ->
+                                                val token =
+                                                        jwtUtils.generateToken(
+                                                                subject = user.username,
+                                                                claims =
+                                                                        mapOf(
+                                                                                "email" to
+                                                                                        user.email,
+                                                                                "roles" to
+                                                                                        (if (user.isActive
+                                                                                        )
+                                                                                                "USER"
+                                                                                        else
+                                                                                                "INACTIVE")
+                                                                        )
+                                                        )
+                                                UserSessionResponse(
+                                                        user = user,
+                                                        token = token,
+                                                        tokenType = "Bearer"
+                                                )
+                                        }
                         )
                 )
 
@@ -74,3 +98,9 @@ class AuthController(
                 )
         }
 }
+
+data class UserSessionResponse(
+        val user: UserDataResponse,
+        val token: String,
+        val tokenType: String
+)

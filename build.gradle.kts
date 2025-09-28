@@ -53,6 +53,9 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	// In-memory DB for tests (needed for application-test.properties referencing org.h2.Driver)
 	testRuntimeOnly("com.h2database:h2")
+
+	// JWT for stateless auth tokens
+	implementation("com.auth0:java-jwt:4.4.0")
 }
 
 kotlin {
