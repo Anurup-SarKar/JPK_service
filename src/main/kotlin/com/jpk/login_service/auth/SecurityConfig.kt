@@ -29,7 +29,11 @@ class SecurityConfig(private val jwtUtils: JwtUtils) {
                                     "/api/auth/login",
                                     "/api/auth/validate-otp",
                                     "/api/auth/resend-otp",
-                                    "/api/auth/password/reset/**"
+                                    "/api/auth/password/reset/**",
+                                    "/actuator/health",
+                                    "/actuator/info",
+                                    "/api/actuator/health",
+                                    "/api/actuator/info"
                             )
                             .permitAll()
                             .anyRequest()

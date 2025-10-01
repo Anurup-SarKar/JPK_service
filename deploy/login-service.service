@@ -1,0 +1,24 @@
+[Unit]
+Description=JPK Login Service (Spring Boot)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/login_service
+ExecStart=/usr/bin/java -jar /opt/login_service/login_service.jar
+Restart=always
+RestartSec=5
+# Environment variables (set real secrets before starting)
+Environment=SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/janasikhsha_db
+Environment=SPRING_DATASOURCE_USERNAME=jpkuser
+Environment=SPRING_DATASOURCE_PASSWORD=CHANGE_ME_DB_PASS
+Environment=SECURITY_JWT_SECRET=CHANGE_ME_JWT_SECRET
+Environment=MAIL_USERNAME=CHANGE_ME_SMTP_USER
+Environment=MAIL_PASSWORD=CHANGE_ME_SMTP_PASS
+# (Optional) Java opts
+Environment=JAVA_OPTS=-Xms256m -Xmx512m
+# Use JAVA_OPTS if you want: ExecStart=/usr/bin/java $JAVA_OPTS -jar /opt/login_service/login_service.jar
+
+[Install]
+WantedBy=multi-user.target

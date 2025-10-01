@@ -73,3 +73,4 @@ allOpen {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+tasks.bootJar { archiveFileName.set("login_service.jar") }
