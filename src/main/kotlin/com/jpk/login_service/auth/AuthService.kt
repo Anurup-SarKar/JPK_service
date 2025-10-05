@@ -78,6 +78,7 @@ class AuthService(
                         cctvLink = user.cctvLink,
                         isCctvVisible = user.isCctvVisible,
                         isCctvStorageVisible = user.isCctvStorageVisible,
+                        isAdmin = user.isAdmin,
                         isActive = user.isActive
                 )
         }
