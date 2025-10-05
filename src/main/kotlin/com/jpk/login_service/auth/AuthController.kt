@@ -43,12 +43,17 @@ class AuthController(
                                                                         mapOf(
                                                                                 "email" to
                                                                                         user.email,
+                                                                                "isAdmin" to
+                                                                                        user.isAdmin
+                                                                                                .toString(),
                                                                                 "roles" to
-                                                                                        (if (user.isActive
+                                                                                        (if (!user.isActive
                                                                                         )
-                                                                                                "USER"
-                                                                                        else
-                                                                                                "INACTIVE")
+                                                                                                "INACTIVE"
+                                                                                        else if (user.isAdmin
+                                                                                        )
+                                                                                                "ADMIN"
+                                                                                        else "USER")
                                                                         )
                                                         )
                                                 UserSessionResponse(
