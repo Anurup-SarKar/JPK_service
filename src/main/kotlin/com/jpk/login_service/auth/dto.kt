@@ -43,5 +43,6 @@ data class UserDataResponse(
         val cctvLink: String?,
         val isCctvVisible: Boolean,
         val isCctvStorageVisible: Boolean,
+        val isAdmin: Boolean,
         val isActive: Boolean
 )
