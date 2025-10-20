@@ -14,25 +14,26 @@ class PasswordMigrationServiceTest {
     @BeforeEach
     fun setup() {
         userRepository = mock()
-        
+
         // Mock userRepository.save to return the argument
         whenever(userRepository.save(any<User>())).thenAnswer { invocation ->
             invocation.getArgument<User>(0)
         }
-        
+
         passwordMigrationService = PasswordMigrationService(userRepository)
     }
 
     @Test
     fun `migrateAllPasswords should skip already migrated users`() {
-        val bcryptUser = User(
-            id = 1L,
-            username = "bcryptuser",
-            email = "bcrypt@example.com",
-            passwordHash = "\$2a\$10\$abcdefghijklmnopqrstuvwxyz1234567890",
-            fullName = "BCrypt User"
-        )
-        
+        val bcryptUser =
+                User(
+                        id = 1L,
+                        username = "bcryptuser",
+                        email = "bcrypt@example.com",
+                        passwordHash = "\$2a\$10\$abcdefghijklmnopqrstuvwxyz1234567890",
+                        fullName = "BCrypt User"
+                )
+
         whenever(userRepository.findAll()).thenReturn(listOf(bcryptUser))
 
         val result = passwordMigrationService.migrateAllPasswords()
@@ -44,14 +45,18 @@ class PasswordMigrationServiceTest {
 
     @Test
     fun `migrateAllPasswords should migrate non-BCrypt passwords`() {
-        val oldUser = User(
-            id = 1L,
-            username = "olduser",
-            email = "old@example.com",
-            passwordHash = "plainsha256hash1234567890abcdef",
-            fullName = "Old User"
-        )
-        
+        val oldUser =
+                User(
+                        id = 1L,
+                        username = "olduser",
+                        email = "old@example.com",
+                        passwordHash =
+                                "a" +
+                                        "0123456789abcdef".repeat(3) +
+                                        "0123456789abcde", // 64-char hex
+                        fullName = "Old User"
+                )
+
         whenever(userRepository.findAll()).thenReturn(listOf(oldUser))
 
         val result = passwordMigrationService.migrateAllPasswords()
@@ -64,24 +69,28 @@ class PasswordMigrationServiceTest {
 
     @Test
     fun `migrateAllPasswords should handle mix of migrated and non-migrated users`() {
-        val bcryptUser = User(
-            id = 1L,
-            username = "bcryptuser",
-            email = "bcrypt@example.com",
-            passwordHash = "\$2a\$10\$abcdefghijklmnopqrstuvwxyz1234567890",
-            fullName = "BCrypt User"
-        )
-        
-        val oldUser = User(
-            id = 2L,
-            username = "olduser",
-            email = "old@example.com",
-            passwordHash = "plainsha256hash1234567890abcdef",
-            fullName = "Old User"
-        )
-        
+        val bcryptUser =
+                User(
+                        id = 1L,
+                        username = "bcryptuser",
+                        email = "bcrypt@example.com",
+                        passwordHash = "\$2a\$10\$abcdefghijklmnopqrstuvwxyz1234567890",
+                        fullName = "BCrypt User"
+                )
+
+        val oldUser =
+                User(
+                        id = 2L,
+                        username = "olduser",
+                        email = "old@example.com",
+                        passwordHash =
+                                "a" +
+                                        "0123456789abcdef".repeat(3) +
+                                        "0123456789abcde", // 64-char hex
+                        fullName = "Old User"
+                )
+
         whenever(userRepository.findAll()).thenReturn(listOf(bcryptUser, oldUser))
-        whenever(userRepository.save(any())).thenAnswer { it.arguments[0] }
 
         val result = passwordMigrationService.migrateAllPasswords()
 
@@ -93,30 +102,33 @@ class PasswordMigrationServiceTest {
 
     @Test
     fun `getUnmigratedPasswordCount should count non-BCrypt passwords`() {
-        val bcryptUser = User(
-            id = 1L,
-            username = "bcryptuser",
-            email = "bcrypt@example.com",
-            passwordHash = "\$2a\$10\$abcdefghijklmnopqrstuvwxyz1234567890",
-            fullName = "BCrypt User"
-        )
-        
-        val oldUser1 = User(
-            id = 2L,
-            username = "olduser1",
-            email = "old1@example.com",
-            passwordHash = "plainsha256hash1",
-            fullName = "Old User1"
-        )
-        
-        val oldUser2 = User(
-            id = 3L,
-            username = "olduser2",
-            email = "old2@example.com",
-            passwordHash = "plainsha256hash2",
-            fullName = "Old User2"
-        )
-        
+        val bcryptUser =
+                User(
+                        id = 1L,
+                        username = "bcryptuser",
+                        email = "bcrypt@example.com",
+                        passwordHash = "\$2a\$10\$abcdefghijklmnopqrstuvwxyz1234567890",
+                        fullName = "BCrypt User"
+                )
+
+        val oldUser1 =
+                User(
+                        id = 2L,
+                        username = "olduser1",
+                        email = "old1@example.com",
+                        passwordHash = "plainsha256hash1",
+                        fullName = "Old User1"
+                )
+
+        val oldUser2 =
+                User(
+                        id = 3L,
+                        username = "olduser2",
+                        email = "old2@example.com",
+                        passwordHash = "plainsha256hash2",
+                        fullName = "Old User2"
+                )
+
         whenever(userRepository.findAll()).thenReturn(listOf(bcryptUser, oldUser1, oldUser2))
 
         val count = passwordMigrationService.getUnmigratedPasswordCount()
@@ -128,16 +140,16 @@ class PasswordMigrationServiceTest {
     fun `migrateUserPassword should migrate specific user with raw password`() {
         val userId = 1L
         val rawPassword = "MySecurePassword123"
-        val user = User(
-            id = userId,
-            username = "testuser",
-            email = "user@example.com",
-            passwordHash = "oldHash",
-            fullName = "Test User"
-        )
-        
+        val user =
+                User(
+                        id = userId,
+                        username = "testuser",
+                        email = "user@example.com",
+                        passwordHash = "oldHash",
+                        fullName = "Test User"
+                )
+
         whenever(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user))
-        whenever(userRepository.save(any())).thenAnswer { it.arguments[0] }
 
         val success = passwordMigrationService.migrateUserPassword(userId, rawPassword)
 
@@ -150,7 +162,7 @@ class PasswordMigrationServiceTest {
     fun `migrateUserPassword should return false for non-existent user`() {
         val userId = 999L
         val rawPassword = "password"
-        
+
         whenever(userRepository.findById(userId)).thenReturn(java.util.Optional.empty())
 
         val success = passwordMigrationService.migrateUserPassword(userId, rawPassword)
@@ -163,16 +175,16 @@ class PasswordMigrationServiceTest {
     fun `migrateUserPassword should properly hash password with SHA-256 then BCrypt`() {
         val userId = 1L
         val rawPassword = "TestPassword123"
-        val user = User(
-            id = userId,
-            username = "testuser",
-            email = "user@example.com",
-            passwordHash = "oldHash",
-            fullName = "Test User"
-        )
-        
+        val user =
+                User(
+                        id = userId,
+                        username = "testuser",
+                        email = "user@example.com",
+                        passwordHash = "oldHash",
+                        fullName = "Test User"
+                )
+
         whenever(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user))
-        whenever(userRepository.save(any())).thenAnswer { it.arguments[0] }
 
         passwordMigrationService.migrateUserPassword(userId, rawPassword)
 
