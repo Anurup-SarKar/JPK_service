@@ -15,10 +15,10 @@ Environment=SPRING_DATASOURCE_USERNAME=jpkuser
 Environment=SPRING_DATASOURCE_PASSWORD=Jpk@2025
 Environment=SECURITY_JWT_SECRET=CHANGE_ME_JWT_SECRET
 # Direct Brevo SMTP credentials (replace with your actual Brevo SMTP key)
-Environment=MAIL_FROM=jpkadmin@jpkindia.org
-Environment="MAIL_FROM_NAME=JPK"
-Environment=MAIL_USERNAME=98f30b001@smtp-brevo.com
-Environment=MAIL_PASSWORD=BKVWpa0hYMI3y4g9
+Environment=MAIL_FROM=noreply@jpkindia.org
+Environment="MAIL_FROM_NAME=JANASIKSHA PROCHAR KENDRA"
+Environment=MAIL_USERNAME=994868001@smtp-brevo.com
+Environment=MAIL_PASSWORD=sGXzL64EVj5ZWdxB
 # (Optional) Java opts
 Environment="JAVA_OPTS=-Xms256m -Xmx512m"
 # Use JAVA_OPTS if you want: ExecStart=/usr/bin/java $JAVA_OPTS -jar /opt/login_service/login_service.jar
